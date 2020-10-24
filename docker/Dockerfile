@@ -18,7 +18,7 @@ RUN apt-get update \
        libvde-dev libvdeplug-dev libvte-dev libxen-dev liblzo2-dev \
        valgrind xfslibs-dev \
        libnfs-dev libiscsi-dev python3 python3-setuptools \
-       ninja-build vim emacs
+       vim emacs
 
 WORKDIR $mountdir
 # Watermark $mountdir in docker image, so we can detect if a host directory is
