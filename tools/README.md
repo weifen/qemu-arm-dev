@@ -20,7 +20,6 @@ You may want to browse all the device models in qemu/hw/\*/\*.c to know what is 
     .class_init    = sbsa_ec_class_init,
     };
 ```
-
 You may need to check whether all devices are derived from the DEVICE_CLASS. and what its parent type is. To browse all files to get the information, a `mygrep.py` script is provided to facilitate the process.  
     
 ### Solution Proposal
