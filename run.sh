@@ -5,7 +5,7 @@
  && curl -O  curl -O https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2020-08-24/2020-08-20-raspios-buster-armhf-lite.zip \
  && unzip 2020-08-20-raspios-buster-armhf-lite.zip && rm 2020-08-20-raspios-buster-armhf-lite.zip  && cd ..
 
-[ ! -d "./system/qemu-rpi-kernel" ] && git clone https://github.com/dhruvvyas90/qemu-rpi-kernel.git
+[ ! -d "./system/qemu-rpi-kernel" ] && cd ./system && git clone https://github.com/dhruvvyas90/qemu-rpi-kernel.git && cd ..
  
 if [[ "$(docker images -q qemu-raspberry-pi 2> /dev/null)" == "" ]]; then
   docker build -t qemu-raspberry-pi docker
