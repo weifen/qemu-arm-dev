@@ -2,8 +2,8 @@
 [ ! -d "./source" ] && git clone git://git.qemu-project.org/qemu.git && mv ./qemu ./source
 
 [ ! -d "./system" ] && mkdir -p ./system && cd ./system \
- && curl -O  https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip \
- && unzip 2020-02-13-raspbian-buster-lite.zip && 2020-02-13-raspbian-buster-lite.zip  && cd ..
+ && curl -O  curl -O https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2020-08-24/2020-08-20-raspios-buster-armhf-lite.zip \
+ && unzip 2020-08-20-raspios-buster-armhf-lite.zip && rm 2020-08-20-raspios-buster-armhf-lite.zip  && cd ..
 
 [ ! -d "./system/qemu-rpi-kernel" ] && git clone https://github.com/dhruvvyas90/qemu-rpi-kernel.git
  
