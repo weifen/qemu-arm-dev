@@ -2,6 +2,9 @@ FROM ubuntu:20.04
 
 LABEL maintainer "Wei-Fen Lin <weifen@gs.ncku.edu.tw>"
 
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Location in the container file system where the host gem5 working
 # directory is expected to be mounted.
 ARG mountdir=/qemu
@@ -18,7 +21,7 @@ RUN set -x \
        ninja-build vim emacs 
 
 ## Install GNU GCC cross compiler for AARCH64
-RUN echo 'deb http://archive.ubuntu.com/ubuntu/ focal-proposed universe' >> /etc/apt/sources/list
+RUN echo 'deb http://archive.ubuntu.com/ubuntu/ focal-proposed universe' >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y gcc-10-aarch64-linux-gnu
 
 WORKDIR $mountdir
