@@ -15,8 +15,9 @@ RUN set -x \
     && apt-get install -y \
        build-essential git m4 scons zlib1g  zlib1g-dev \
        libprotobuf-dev protobuf-compiler libprotoc-dev libgoogle-perftools-dev \
-       python-dev python-six doxygen libboost-all-dev \
+       python-dev python-six doxygen libboost-all-dev pkg-config\
        libhdf5-serial-dev python3-pydot libpng-dev libelf-dev \
+       libglib2.0-dev binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev \
        telnet wget python3-pip \
        ninja-build vim emacs 
 
