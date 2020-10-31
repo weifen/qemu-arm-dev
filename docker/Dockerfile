@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer "Wei-Fen Lin <weifen@gs.ncku.edu.tw>"
 
@@ -7,23 +7,29 @@ LABEL maintainer "Wei-Fen Lin <weifen@gs.ncku.edu.tw>"
 ARG mountdir=/qemu
 
 ## Install dependency
-RUN apt-get update \
-    && apt-get install -y git libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev \
-       git-email \
-       libaio-dev libbluetooth-dev libbrlapi-dev libbz2-dev \
-       libcap-dev libcap-ng-dev libcurl4-gnutls-dev libgtk-3-dev \
-       libibverbs-dev libjpeg8-dev libncurses5-dev libnuma-dev \
-       librbd-dev librdmacm-dev \
-       libsasl2-dev libsdl1.2-dev libseccomp-dev libsnappy-dev libssh2-1-dev \
-       libvde-dev libvdeplug-dev libvte-dev libxen-dev liblzo2-dev \
-       valgrind xfslibs-dev \
-       libnfs-dev libiscsi-dev python3 python3-setuptools \
-       ninja-build vim emacs
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y \
+       build-essential git m4 scons zlib1g  zlib1g-dev \
+       libprotobuf-dev protobuf-compiler libprotoc-dev libgoogle-perftools-dev \
+       python-dev python-six doxygen libboost-all-dev \
+       libhdf5-serial-dev python3-pydot libpng-dev libelf-dev \
+       telnet wget python3-pip \
+       ninja-build vim emacs 
+
+## Install GNU GCC cross compiler for AARCH64
+RUN echo 'deb http://archive.ubuntu.com/ubuntu/ focal-proposed universe' >> /etc/apt/sources/list
+RUN apt-get update && apt-get install -y gcc-10-aarch64-linux-gnu
 
 WORKDIR $mountdir
 # Watermark $mountdir in docker image, so we can detect if a host directory is
 # actualy mounted on top when we run the container.
 RUN touch .in-docker-container
+
+ENV M5_PATH $mountdir/system
+
+#Full system runs expose console at port 3456. Use telnet or nc on MacOS
+EXPOSE 3456/tcp
 
 ADD startup.sh /
 RUN set -x \
