@@ -18,8 +18,10 @@ RUN set -x \
        python-dev python-six doxygen libboost-all-dev pkg-config\
        libhdf5-serial-dev python3-pydot libpng-dev libelf-dev \
        libglib2.0-dev binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev \
-       telnet wget python3-pip \
-       ninja-build vim emacs 
+       telnet wget python3-pip libcap-dev libcap-ng-dev libattr1-dev \
+       ninja-build vim emacs netplan.io
+
+RUN echo "ENABLED=1" | tee /etc/default/netplan
 
 ## Install GNU GCC cross compiler for AARCH64
 RUN echo 'deb http://archive.ubuntu.com/ubuntu/ focal-proposed universe' >> /etc/apt/sources.list
