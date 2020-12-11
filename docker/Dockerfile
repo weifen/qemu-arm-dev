@@ -1,57 +1,48 @@
-# Build stage for qemu-system-arm
-FROM ubuntu:18.04 AS qemu-builder
-LABEL maintainer "Gimme <P7709122@gs.ncku.edu.tw>"
+FROM ubuntu:20.04
 
-#Step 2 : setup a QEMU container using Dockerfile
-RUN apt-get update && \
-	apt-get install -y git libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev \
-	git-email \
-	libaio-dev libbluetooth-dev libbrlapi-dev libbz2-dev \
-	libcap-dev libcap-ng-dev libcurl4-gnutls-dev libgtk-3-dev \
-	libibverbs-dev libjpeg8-dev libncurses5-dev libnuma-dev \
-	librbd-dev librdmacm-dev \
-	libsasl2-dev libsdl1.2-dev libseccomp-dev libsnappy-dev libssh2-1-dev \
-	libvde-dev libvdeplug-dev libvte-dev libxen-dev liblzo2-dev \
-	valgrind xfslibs-dev \
-	libnfs-dev libiscsi-dev python3 python3-setuptools \
-	ninja-build
-COPY source /qemu
-RUN cd /qemu \
-	&& mkdir -p bin/debug/native \
-	&& cd bin/debug/native \
-	&& ../../../configure --enable-debug  --target-list=arm-softmmu,aarch64-softmmu \
-	&& make -j $(nproc) 
+LABEL maintainer "Wei-Fen Lin <weifen@gs.ncku.edu.tw>"
 
-RUN apt-get install -y unzip
-# Step 3-1 : Get raspbian image
-ARG FILESYSTEM_IMAGE_URL="http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-09-30/2019-09-26-raspbian-buster-lite.zip"
-ARG FILESYSTEM_IMAGE_CHECKSUM="a50237c2f718bd8d806b96df5b9d2174ce8b789eda1f03434ed2213bbca6c6ff"
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ADD $FILESYSTEM_IMAGE_URL /tmp/filesystem.zip
+# Location in the container file system where the host gem5 working
+# directory is expected to be mounted.
+ARG mountdir=/qemu
 
-RUN cd /tmp && \
-    echo "$FILESYSTEM_IMAGE_CHECKSUM  filesystem.zip" | sha256sum -c && \
-    unzip filesystem.zip && \
-    mkdir -p /root/qemu-rpi-image && \
-    cp *.img /root/qemu-rpi-image/raspbian.img && \
-    rm -rf /tmp/* 
+## Install dependency
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y \
+       build-essential git m4 scons zlib1g  zlib1g-dev \
+       libprotobuf-dev protobuf-compiler libprotoc-dev libgoogle-perftools-dev \
+       python-dev python-six doxygen libboost-all-dev pkg-config\
+       libhdf5-serial-dev python3-pydot libpng-dev libelf-dev \
+       libglib2.0-dev binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev \
+       telnet wget python3-pip libcap-dev libcap-ng-dev libattr1-dev \
+       ninja-build vim emacs netplan.io
 
-# Step 3-2 : Get raspi kernel
-ARG RPI_KERNEL_URL="https://github.com/dhruvvyas90/qemu-rpi-kernel/archive/afe411f2c9b04730bcc6b2168cdc9adca224227c.zip"
-ARG RPI_KERNEL_CHECKSUM="295a22f1cd49ab51b9e7192103ee7c917624b063cc5ca2e11434164638aad5f4"
+RUN echo "ENABLED=1" | tee /etc/default/netplan
 
-ADD $RPI_KERNEL_URL /tmp/qemu-rpi-kernel.zip
+## Install GNU GCC cross compiler for AARCH64
+RUN echo 'deb http://archive.ubuntu.com/ubuntu/ focal-proposed universe' >> /etc/apt/sources.list
+RUN apt-get update && apt-get install -y gcc-10-aarch64-linux-gnu
 
-RUN cd /tmp && \
-    echo "$RPI_KERNEL_CHECKSUM  qemu-rpi-kernel.zip" | sha256sum -c && \
-    unzip qemu-rpi-kernel.zip && \
-    mkdir -p /root/qemu-rpi-kernel && \
-    cp qemu-rpi-kernel-*/kernel-qemu-4.19.50-buster /root/qemu-rpi-kernel/ && \
-    cp qemu-rpi-kernel-*/versatile-pb.dtb /root/qemu-rpi-kernel/ && \
-    rm -rf /tmp/*
+WORKDIR $mountdir
+# Watermark $mountdir in docker image, so we can detect if a host directory is
+# actualy mounted on top when we run the container.
+RUN touch .in-docker-container
 
-ADD startup.sh /usr/local/bin/startup
+ENV M5_PATH $mountdir/system
 
-RUN chmod 755 /usr/local/bin/startup
+#Full system runs expose console at port 3456. Use telnet or nc on MacOS
+EXPOSE 3456/tcp
 
+ADD startup.sh /
+RUN set -x \
+    && sed -e s@#MOUNTDIR#@mountdir=$mountdir@ /startup.sh \
+       > /usr/local/bin/startup \
+    && chmod 755 /usr/local/bin/startup \
+    && rm /startup.sh
+
+# Run the front-end script
 ENTRYPOINT ["/usr/local/bin/startup"]
