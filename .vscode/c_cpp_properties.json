@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/source/include",
+                "${workspaceFolder}/source",
+                "${workspaceFolder}/source/target/arm",
+                "${workspaceFolder}/source/bin/debug/native",
+                "${workspaceFolder}/source/meson/test cases/linuxlike/6 subdir include order/subdir"
+            ],
+            "defines": [],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/local/bin/gcc-9",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-x64",
+            "compileCommands": "${workspaceFolder}/source/bin/debug/native/compile_commands.json"
+        }
+    ],
+    "version": 4
+}
