@@ -7,7 +7,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Location in the container file system where the host gem5 working
 # directory is expected to be mounted.
-ARG mountdir=/qemu
+ARG mountdir=/workspace
 
 ## Install dependency
 RUN set -x \
