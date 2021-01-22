@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #MOUNTDIR#  # substituted during docker build
-mountdir=${mountdir:-'/qemu'}
+mountdir=${mountdir:-'/workspace'}
 
 state=$1
 
