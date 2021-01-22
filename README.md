@@ -7,8 +7,5 @@ For other targets, you can recompile QEMU in the container.
 Execute `run.sh`
 1. get Raspbian and Linaro OS image.
 2. get qemu kernel for raspi and linaro.
+4. get tutorials git
 3. build docker image: qemu-arm-ubuntu.
-
-# Start qemu-arm-ubuntu container
-1. get qemu git
-
