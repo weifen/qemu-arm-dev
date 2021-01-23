@@ -22,8 +22,8 @@ then
   bin/qemu-system-arm \
     -M versatilepb \
     -cpu arm1176 \
-    -m 1024 \
-    -drive "file=system/os/2020-08-20-raspios-buster-armhf-lite.img,if=none,index=0,media=disk,format=raw,id=disk0" \ 
+    -m 256 \
+    -drive "file=system/os/2020-08-20-raspios-buster-armhf-lite.img,if=none,index=0,media=disk,format=raw,id=disk0" \
     -device "virtio-blk-pci,drive=disk0,disable-modern=on,disable-legacy=off" \
     -net nic,model=virtio \
     -net user,hostfwd=tcp::5022-:22 \
@@ -47,7 +47,7 @@ then
     -device "virtio-net-device,netdev=user0" \
     -device "virtio-blk-device,drive=image" \
     -device "virtio-9p-device,fsdev=r,mount_tag=r" \
-    -fsdev "local,id=r,path=/qemu,security_model=none"
+    -fsdev "local,id=r,path=/workspace,security_model=none"
 fi
 
 exec /bin/bash -l
