@@ -12,3 +12,16 @@ For other targets, you can recompile QEMU in the container.
 2. `./run build` will start a qemu container and build qemu.
 3. `./run raspi` will start a qemu container and emulate raspbian.
 4. `./run linaro` will start a qemu container and emulate linaro.
+
+# Directory Structure
+```
+MCVP
+|
++ -- bin : build by qemu 
+|
++ -- qemu-arm-dev : the docker git repository
+|
++ -- system : os image and qemu kernel
+|
++ -- tutorials : qemu tutorials lab2 git repository
+```
